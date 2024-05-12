@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaultwarden
+spec:
+  replicas: 1  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: vaultwarden
+  template:
+    metadata:
+      labels:
+        app: vaultwarden
+    spec:
+      containers:
+      - name: vaultwarden
+        image: vaultwarden/server:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        restartPolicy: UnlessTerminated
+        volumeMounts:
+        - name: vaultwarden-data
+          mountPath: /data/
+      volumes:
+      - name: vaultwarden-data
+        # Choose appropriate persistent volume storage class based on your environment
+        persistentVolumeClaim:
+          claimName: vaultwarden-pvc
